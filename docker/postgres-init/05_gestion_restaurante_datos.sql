@@ -396,11 +396,12 @@ INSERT INTO sucursales_oficiales (codigo_sucursal, nombre_oficial, nombre_comerc
 -- =====================================================
 -- 5. METAS_ABASTECIMIENTO (200 registros)
 -- =====================================================
+
 INSERT INTO metas_abastecimiento (id_proveedor, id_sucursal, anio, mes, meta_kg, meta_pedidos, calidad_objetivo, cumplimiento_refrigeracion_objetivo, puntualidad_objetivo)
 SELECT 
     p.id_proveedor,
     s.id_sucursal,
-    2024,
+    anios.anio,
     m.mes,
     1000 + (FLOOR(RANDOM() * 4000)),
     10 + FLOOR(RANDOM() * 20),
@@ -413,17 +414,21 @@ FROM
     (SELECT id_sucursal FROM sucursales_oficiales LIMIT 5) s
     CROSS JOIN
     (SELECT generate_series(1, 12) AS mes) m
+    CROSS JOIN
+    (SELECT generate_series(2024, 2025) AS anio) anios
 WHERE RANDOM() < 0.3
 LIMIT 200;
 
 -- =====================================================
--- 6. EVALUACIONES_CALIDAD (200 registros)
+-- POSTGRESQL - EVALUACIONES_CALIDAD (2024 y 2025)
+-- GENERANDO FECHAS PARA DOS AÑOS
 -- =====================================================
+
 INSERT INTO evaluaciones_calidad (id_proveedor, id_sucursal, fecha_evaluacion, calidad_general, temperatura_cumple, tiempo_cumple, calidad_carnes, calidad_verduras, calidad_pollos, observaciones, evaluador)
 SELECT
     p.id_proveedor,
     s.id_sucursal,
-    CURRENT_DATE - (FLOOR(RANDOM() * 180) || ' days')::INTERVAL,
+    DATE '2024-01-01' + (FLOOR(RANDOM() * 730) || ' days')::INTERVAL,
     1 + FLOOR(RANDOM() * 5),
     RANDOM() > 0.2,
     RANDOM() > 0.15,
