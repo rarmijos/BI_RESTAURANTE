@@ -1,0 +1,20 @@
+
+------------------------------------------------------------------------------------
+Detener todos los Dockers
+
+docker stop $(docker ps -q)
+
+------------------------------------------------------------------------------------
+
+Arrancar el docker compose
+
+con la -d es rapido
+
+docker compose up -d
+
+sin la -d es para ir paso a paso en caso de que falle algo
+
+docker compose up
+
+------------------------------------------------------------------------------------
+

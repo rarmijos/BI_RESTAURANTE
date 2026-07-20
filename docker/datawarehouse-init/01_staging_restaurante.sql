@@ -1,324 +1,28 @@
 -- =====================================================
--- SCRIPT: 01_staging_restaurante.sql
--- DESCRIPCIÓN: Creación de tablas STAGING para RESTAURANTES
--- ESQUEMA: staging (el que ya tienes)
+-- SCRIPT: staging_tablas_dim_fact_audit.sql
+-- DESCRIPCIÓN: Creación de tablas DIM, FACT y AUDITORÍA
+-- ESQUEMA: staging y audit
 -- =====================================================
 
 SET client_encoding = 'UTF8';
 
 -- =====================================================
--- 1. STAGING EXCEL - COMPRAS
+-- 1. CREAR ESQUEMAS
 -- =====================================================
 
-CREATE TABLE IF NOT EXISTS staging.excel_compras (
-    id_compra VARCHAR(30),
-    fecha_compra DATE,
-    orden_compra VARCHAR(50),
-    factura_distribuidor VARCHAR(50),
-    codigo_distribuidor VARCHAR(30),
-    distribuidor VARCHAR(200),
-    contacto_ventas VARCHAR(150),
-    telefono_contacto VARCHAR(50),
-    correo_contacto VARCHAR(200),
-    codigo_insumo VARCHAR(30),
-    insumo VARCHAR(200),
-    categoria VARCHAR(100),
-    presentacion VARCHAR(150),
-    lote VARCHAR(50),
-    fecha_vencimiento DATE,
-    cantidad_comprada INTEGER,
-    costo_unitario_lista NUMERIC(14,4),
-    descuento_pct NUMERIC(8,4),
-    costo_unitario_descuento NUMERIC(14,4),
-    subtotal_bruto NUMERIC(14,2),
-    valor_descuento NUMERIC(14,2),
-    valor_neto NUMERIC(14,2),
-    codigo_sucursal_entrega VARCHAR(20),
-    sucursal_entrega VARCHAR(150),
-    bodega_entrega VARCHAR(100),
-    fecha_estimada_entrega DATE,
-    estado_recepcion VARCHAR(30),
-    observacion TEXT,
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+DROP SCHEMA IF EXISTS staging CASCADE;
+CREATE SCHEMA staging;
+
+DROP SCHEMA IF EXISTS audit CASCADE;
+CREATE SCHEMA audit;
 
 -- =====================================================
--- 2. STAGING EXCEL - DISTRIBUIDORES
+-- 2. TABLAS DIM (Dimensiones)
 -- =====================================================
 
-CREATE TABLE IF NOT EXISTS staging.excel_distribuidores (
-    codigo_distribuidor VARCHAR(30),
-    nombre_distribuidor VARCHAR(200),
-    ruc VARCHAR(30),
-    ciudad VARCHAR(100),
-    contacto_ventas VARCHAR(150),
-    telefono_contacto VARCHAR(50),
-    correo_contacto VARCHAR(200),
-    condicion_pago VARCHAR(50),
-    descuento_base_pct NUMERIC(8,4),
-    dias_entrega_promedio INTEGER,
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 3. STAGING EXCEL - INSUMOS
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.excel_insumos (
-    codigo_insumo VARCHAR(30),
-    nombre_insumo VARCHAR(200),
-    categoria VARCHAR(100),
-    tipo VARCHAR(50),
-    unidad_medida VARCHAR(20),
-    temperatura_requerida NUMERIC(8,2),
-    vida_util_dias INTEGER,
-    origen VARCHAR(60),
-    calidad_estandar VARCHAR(30),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 4. STAGING EXCEL - PUNTOS_ENTREGA
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.excel_puntos_entrega (
-    codigo_sucursal VARCHAR(20),
-    nombre_sucursal VARCHAR(150),
-    zona VARCHAR(50),
-    ciudad VARCHAR(100),
-    direccion VARCHAR(250),
-    bodega_principal VARCHAR(100),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 5. STAGING EXCEL - RESUMEN_MENSUAL
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.excel_resumen_mensual (
-    anio INTEGER,
-    mes INTEGER,
-    compras INTEGER,
-    unidades NUMERIC(14,2),
-    valor_neto NUMERIC(14,2),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 6. STAGING MYSQL - PROVEEDORES
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.mysql_proveedores (
-    id_proveedor INTEGER,
-    nombre_empresa VARCHAR(200),
-    contacto_principal VARCHAR(150),
-    telefono VARCHAR(50),
-    email VARCHAR(200),
-    ciudad VARCHAR(100),
-    pais VARCHAR(50),
-    tipo_proveedor VARCHAR(10),
-    calificacion_general NUMERIC(3,2),
-    estado_registro VARCHAR(5),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 7. STAGING MYSQL - SUCURSALES
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.mysql_sucursales (
-    id_sucursal INTEGER,
-    codigo_sucursal VARCHAR(20),
-    nombre_sucursal VARCHAR(150),
-    ciudad VARCHAR(100),
-    telefono VARCHAR(50),
-    responsable VARCHAR(150),
-    capacidad_almacenamiento INTEGER,
-    fecha_apertura DATE,
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 8. STAGING MYSQL - TIPO_INSUMO
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.mysql_tipo_insumo (
-    id_tipo INTEGER,
-    nombre_tipo VARCHAR(100),
-    categoria VARCHAR(50),
-    temperatura_minima NUMERIC(8,2),
-    temperatura_maxima NUMERIC(8,2),
-    requiere_refrigeracion VARCHAR(5),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 9. STAGING MYSQL - INSUMOS
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.mysql_insumos (
-    id_insumo INTEGER,
-    id_tipo INTEGER,
-    nombre_insumo VARCHAR(150),
-    unidad_medida VARCHAR(20),
-    vida_util_dias INTEGER,
-    origen VARCHAR(60),
-    calidad_estandar VARCHAR(30),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 10. STAGING MYSQL - ENTREGAS
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.mysql_entregas (
-    id_entrega INTEGER,
-    id_proveedor INTEGER,
-    id_sucursal INTEGER,
-    fecha_pedido DATE,
-    fecha_entrega_programada DATE,
-    fecha_entrega_real DATE,
-    tipo_entrega VARCHAR(30),
-    prioridad VARCHAR(20),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 11. STAGING MYSQL - DETALLE_ENTREGA
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.mysql_detalle_entrega (
-    id_detalle INTEGER,
-    id_entrega INTEGER,
-    id_insumo INTEGER,
-    cantidad_solicitada NUMERIC(14,2),
-    cantidad_recibida NUMERIC(14,2),
-    precio_unitario NUMERIC(14,4),
-    subtotal NUMERIC(14,2),
-    estado_calidad VARCHAR(30),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 12. STAGING MYSQL - CONTROL_RECEPCION
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.mysql_control_recepcion (
-    id_control INTEGER,
-    id_entrega INTEGER,
-    id_proveedor INTEGER,
-    id_sucursal INTEGER,
-    fecha_recepcion DATE,
-    temperatura_producto NUMERIC(8,2),
-    temperatura_esperada NUMERIC(8,2),
-    cumple_refrigeracion VARCHAR(5),
-    distancia_recorrida NUMERIC(10,2),
-    tiempo_transporte NUMERIC(8,2),
-    cumple_plazo VARCHAR(5),
-    minutos_retraso INTEGER,
-    calificacion_control NUMERIC(3,2),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 13. STAGING POSTGRESQL - ZONAS
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.pg_zonas (
-    id_zona INTEGER,
-    codigo_zona VARCHAR(20),
-    nombre_zona VARCHAR(100),
-    region VARCHAR(50),
-    activo BOOLEAN,
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 14. STAGING POSTGRESQL - CATEGORIAS_INSUMOS
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.pg_categorias_insumos (
-    id_categoria INTEGER,
-    codigo_categoria VARCHAR(20),
-    nombre_categoria VARCHAR(100),
-    requiere_refrigeracion BOOLEAN,
-    temperatura_minima NUMERIC(8,2),
-    temperatura_maxima NUMERIC(8,2),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 15. STAGING POSTGRESQL - PROVEEDORES_OFICIALES
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.pg_proveedores_oficiales (
-    id_proveedor INTEGER,
-    codigo_proveedor VARCHAR(20),
-    ruc VARCHAR(30),
-    razon_social VARCHAR(200),
-    nombre_comercial VARCHAR(150),
-    ciudad VARCHAR(100),
-    calificacion_promedio NUMERIC(3,2),
-    estado VARCHAR(20),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 16. STAGING POSTGRESQL - SUCURSALES_OFICIALES
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.pg_sucursales_oficiales (
-    id_sucursal INTEGER,
-    codigo_sucursal VARCHAR(20),
-    nombre_oficial VARCHAR(150),
-    nombre_comercial VARCHAR(150),
-    ciudad VARCHAR(100),
-    telefono VARCHAR(50),
-    responsable VARCHAR(150),
-    fecha_apertura DATE,
-    estado VARCHAR(20),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 17. STAGING POSTGRESQL - METAS_ABASTECIMIENTO
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.pg_metas_abastecimiento (
-    id_meta INTEGER,
-    id_proveedor INTEGER,
-    id_sucursal INTEGER,
-    anio INTEGER,
-    mes INTEGER,
-    meta_kg NUMERIC(14,2),
-    meta_pedidos INTEGER,
-    calidad_objetivo NUMERIC(3,2),
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 18. STAGING POSTGRESQL - EVALUACIONES_CALIDAD
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.pg_evaluaciones_calidad (
-    id_evaluacion INTEGER,
-    id_proveedor INTEGER,
-    id_sucursal INTEGER,
-    fecha_evaluacion DATE,
-    calidad_general INTEGER,
-    temperatura_cumple BOOLEAN,
-    tiempo_cumple BOOLEAN,
-    calidad_carnes INTEGER,
-    calidad_verduras INTEGER,
-    calidad_pollos INTEGER,
-    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =====================================================
--- 19. STAGING - DIMENSIONES PARA BI
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS staging.dim_compras (
+-- 2.1 dim_compras (desde Excel Compras)
+DROP TABLE IF EXISTS staging.dim_compras;
+CREATE TABLE staging.dim_compras (
     id_compra VARCHAR(30),
     fecha_compra DATE,
     id_proveedor VARCHAR(30),
@@ -336,7 +40,9 @@ CREATE TABLE IF NOT EXISTS staging.dim_compras (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS staging.dim_proveedores (
+-- 2.2 dim_proveedores (desde Excel Distribuidores)
+DROP TABLE IF EXISTS staging.dim_proveedores;
+CREATE TABLE staging.dim_proveedores (
     id_proveedor VARCHAR(30),
     nombre_proveedor VARCHAR(200),
     ciudad VARCHAR(100),
@@ -347,7 +53,9 @@ CREATE TABLE IF NOT EXISTS staging.dim_proveedores (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS staging.dim_insumos (
+-- 2.3 dim_insumos (desde Excel Insumos)
+DROP TABLE IF EXISTS staging.dim_insumos;
+CREATE TABLE staging.dim_insumos (
     id_insumo VARCHAR(30),
     nombre_insumo VARCHAR(200),
     categoria VARCHAR(100),
@@ -359,7 +67,9 @@ CREATE TABLE IF NOT EXISTS staging.dim_insumos (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS staging.dim_sucursales (
+-- 2.4 dim_sucursales (desde Excel Puntos_Entrega)
+DROP TABLE IF EXISTS staging.dim_sucursales;
+CREATE TABLE staging.dim_sucursales (
     id_sucursal VARCHAR(20),
     nombre_sucursal VARCHAR(150),
     zona VARCHAR(50),
@@ -368,7 +78,119 @@ CREATE TABLE IF NOT EXISTS staging.dim_sucursales (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS staging.fact_resumen_mensual (
+-- 2.5 dim_proveedores_mysql (desde MySQL proveedores)
+DROP TABLE IF EXISTS staging.dim_proveedores_mysql;
+CREATE TABLE staging.dim_proveedores_mysql (
+    id_proveedor INTEGER,
+    nombre_empresa VARCHAR(200),
+    contacto_principal VARCHAR(150),
+    telefono VARCHAR(50),
+    email VARCHAR(200),
+    ciudad VARCHAR(100),
+    tipo_proveedor VARCHAR(10),
+    calificacion_general NUMERIC(3,2),
+    estado_registro VARCHAR(5),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2.6 dim_sucursales_mysql (desde MySQL sucursales)
+DROP TABLE IF EXISTS staging.dim_sucursales_mysql;
+CREATE TABLE staging.dim_sucursales_mysql (
+    id_sucursal INTEGER,
+    codigo_sucursal VARCHAR(20),
+    nombre_sucursal VARCHAR(150),
+    ciudad VARCHAR(100),
+    telefono VARCHAR(50),
+    responsable VARCHAR(150),
+    capacidad_almacenamiento INTEGER,
+    fecha_apertura DATE,
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2.7 dim_tipo_insumo_mysql (desde MySQL tipo_insumo)
+DROP TABLE IF EXISTS staging.dim_tipo_insumo_mysql;
+CREATE TABLE staging.dim_tipo_insumo_mysql (
+    id_tipo INTEGER,
+    nombre_tipo VARCHAR(100),
+    categoria VARCHAR(50),
+    temperatura_minima NUMERIC(8,2),
+    temperatura_maxima NUMERIC(8,2),
+    requiere_refrigeracion VARCHAR(5),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2.8 dim_insumos_mysql (desde MySQL insumos)
+DROP TABLE IF EXISTS staging.dim_insumos_mysql;
+CREATE TABLE staging.dim_insumos_mysql (
+    id_insumo INTEGER,
+    id_tipo INTEGER,
+    nombre_insumo VARCHAR(150),
+    unidad_medida VARCHAR(20),
+    vida_util_dias INTEGER,
+    origen VARCHAR(60),
+    calidad_estandar VARCHAR(30),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2.9 dim_zonas (desde PostgreSQL zonas)
+DROP TABLE IF EXISTS staging.dim_zonas;
+CREATE TABLE staging.dim_zonas (
+    id_zona INTEGER,
+    codigo_zona VARCHAR(20),
+    nombre_zona VARCHAR(100),
+    region VARCHAR(50),
+    activo BOOLEAN,
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2.10 dim_categorias_insumos (desde PostgreSQL categorias_insumos)
+DROP TABLE IF EXISTS staging.dim_categorias_insumos;
+CREATE TABLE staging.dim_categorias_insumos (
+    id_categoria INTEGER,
+    codigo_categoria VARCHAR(20),
+    nombre_categoria VARCHAR(100),
+    requiere_refrigeracion BOOLEAN,
+    temperatura_minima NUMERIC(8,2),
+    temperatura_maxima NUMERIC(8,2),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2.11 dim_proveedores_oficiales (desde PostgreSQL proveedores_oficiales)
+DROP TABLE IF EXISTS staging.dim_proveedores_oficiales;
+CREATE TABLE staging.dim_proveedores_oficiales (
+    id_proveedor INTEGER,
+    codigo_proveedor VARCHAR(20),
+    ruc VARCHAR(30),
+    razon_social VARCHAR(200),
+    nombre_comercial VARCHAR(150),
+    ciudad VARCHAR(100),
+    calificacion_promedio NUMERIC(3,2),
+    estado VARCHAR(20),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2.12 dim_sucursales_oficiales (desde PostgreSQL sucursales_oficiales)
+DROP TABLE IF EXISTS staging.dim_sucursales_oficiales;
+CREATE TABLE staging.dim_sucursales_oficiales (
+    id_sucursal INTEGER,
+    codigo_sucursal VARCHAR(20),
+    nombre_oficial VARCHAR(150),
+    nombre_comercial VARCHAR(150),
+    ciudad VARCHAR(100),
+    telefono VARCHAR(50),
+    responsable VARCHAR(150),
+    fecha_apertura DATE,
+    estado VARCHAR(20),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =====================================================
+-- 3. TABLAS FACT (Hechos)
+-- =====================================================
+
+-- 3.1 fact_resumen_mensual (desde Excel Resumen_Mensual)
+DROP TABLE IF EXISTS staging.fact_resumen_mensual;
+CREATE TABLE staging.fact_resumen_mensual (
     anio INTEGER,
     mes INTEGER,
     compras INTEGER,
@@ -377,13 +199,90 @@ CREATE TABLE IF NOT EXISTS staging.fact_resumen_mensual (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 3.2 fact_entregas_mysql (desde MySQL entregas)
+DROP TABLE IF EXISTS staging.fact_entregas_mysql;
+CREATE TABLE staging.fact_entregas_mysql (
+    id_entrega INTEGER,
+    id_proveedor INTEGER,
+    id_sucursal INTEGER,
+    fecha_pedido DATE,
+    fecha_entrega_programada DATE,
+    fecha_entrega_real DATE,
+    tipo_entrega VARCHAR(30),
+    prioridad VARCHAR(20),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3.3 fact_detalle_entregas_mysql (desde MySQL detalle_entrega)
+DROP TABLE IF EXISTS staging.fact_detalle_entregas_mysql;
+CREATE TABLE staging.fact_detalle_entregas_mysql (
+    id_detalle INTEGER,
+    id_entrega INTEGER,
+    id_insumo INTEGER,
+    cantidad_solicitada NUMERIC(14,2),
+    cantidad_recibida NUMERIC(14,2),
+    precio_unitario NUMERIC(14,4),
+    subtotal NUMERIC(14,2),
+    estado_calidad VARCHAR(30),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3.4 fact_control_recepcion_mysql (desde MySQL control_recepcion)
+DROP TABLE IF EXISTS staging.fact_control_recepcion_mysql;
+CREATE TABLE staging.fact_control_recepcion_mysql (
+    id_control INTEGER,
+    id_entrega INTEGER,
+    id_proveedor INTEGER,
+    id_sucursal INTEGER,
+    fecha_recepcion DATE,
+    temperatura_producto NUMERIC(8,2),
+    temperatura_esperada NUMERIC(8,2),
+    cumple_refrigeracion VARCHAR(5),
+    distancia_recorrida NUMERIC(10,2),
+    tiempo_transporte NUMERIC(8,2),
+    cumple_plazo VARCHAR(5),
+    minutos_retraso INTEGER,
+    calificacion_control NUMERIC(3,2),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3.5 fact_metas_abastecimiento (desde PostgreSQL metas_abastecimiento)
+DROP TABLE IF EXISTS staging.fact_metas_abastecimiento;
+CREATE TABLE staging.fact_metas_abastecimiento (
+    id_meta INTEGER,
+    id_proveedor INTEGER,
+    id_sucursal INTEGER,
+    anio INTEGER,
+    mes INTEGER,
+    meta_kg NUMERIC(14,2),
+    meta_pedidos INTEGER,
+    calidad_objetivo NUMERIC(3,2),
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3.6 fact_evaluaciones_calidad (desde PostgreSQL evaluaciones_calidad)
+DROP TABLE IF EXISTS staging.fact_evaluaciones_calidad;
+CREATE TABLE staging.fact_evaluaciones_calidad (
+    id_evaluacion INTEGER,
+    id_proveedor INTEGER,
+    id_sucursal INTEGER,
+    fecha_evaluacion DATE,
+    calidad_general INTEGER,
+    temperatura_cumple BOOLEAN,
+    tiempo_cumple BOOLEAN,
+    calidad_carnes INTEGER,
+    calidad_verduras INTEGER,
+    calidad_pollos INTEGER,
+    fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- =====================================================
--- 20. AUDITORÍA
+-- 4. AUDITORÍA
 -- =====================================================
 
-CREATE SCHEMA IF NOT EXISTS audit;
-
-CREATE TABLE IF NOT EXISTS audit.etl_rechazo (
+-- 4.1 etl_rechazo (registro de errores ETL)
+DROP TABLE IF EXISTS audit.etl_rechazo;
+CREATE TABLE audit.etl_rechazo (
     id_rechazo BIGSERIAL PRIMARY KEY,
     fuente VARCHAR(80),
     entidad VARCHAR(80),
@@ -394,7 +293,9 @@ CREATE TABLE IF NOT EXISTS audit.etl_rechazo (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS audit.etl_control (
+-- 4.2 etl_control (control de ejecución ETL)
+DROP TABLE IF EXISTS audit.etl_control;
+CREATE TABLE audit.etl_control (
     id_control BIGSERIAL PRIMARY KEY,
     proceso VARCHAR(80),
     etapa VARCHAR(80),
@@ -408,12 +309,40 @@ CREATE TABLE IF NOT EXISTS audit.etl_control (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 4.3 etl_log (bitácora de eventos)
+DROP TABLE IF EXISTS audit.etl_log;
+CREATE TABLE audit.etl_log (
+    id_log BIGSERIAL PRIMARY KEY,
+    id_control INTEGER,
+    paso VARCHAR(80),
+    mensaje TEXT,
+    nivel VARCHAR(20) DEFAULT 'INFO',
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- =====================================================
--- MENSAJE DE CONFIRMACIÓN
+-- 5. ÍNDICES PARA AUDITORÍA
+-- =====================================================
+
+CREATE INDEX IF NOT EXISTS idx_etl_rechazo_fuente ON audit.etl_rechazo(fuente);
+CREATE INDEX IF NOT EXISTS idx_etl_rechazo_entidad ON audit.etl_rechazo(entidad);
+CREATE INDEX IF NOT EXISTS idx_etl_rechazo_fecha ON audit.etl_rechazo(fecha_registro);
+
+CREATE INDEX IF NOT EXISTS idx_etl_control_proceso ON audit.etl_control(proceso);
+CREATE INDEX IF NOT EXISTS idx_etl_control_estado ON audit.etl_control(estado);
+
+CREATE INDEX IF NOT EXISTS idx_etl_log_control ON audit.etl_log(id_control);
+
+-- =====================================================
+-- 6. MENSAJE DE CONFIRMACIÓN
 -- =====================================================
 
 DO $$
 BEGIN
-    RAISE NOTICE '✅ Tablas creadas exitosamente en el esquema staging!';
-    RAISE NOTICE '📊 Total de tablas: 24';
+    RAISE NOTICE '✅ Tablas creadas exitosamente!';
+    RAISE NOTICE '📊 Total de tablas:';
+    RAISE NOTICE '   - DIM: 12';
+    RAISE NOTICE '   - FACT: 6';
+    RAISE NOTICE '   - AUDIT: 3';
+    RAISE NOTICE '   - TOTAL: 21';
 END $$;
