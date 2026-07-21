@@ -20,9 +20,13 @@ CREATE SCHEMA audit;
 -- 2. TABLAS DIM (Dimensiones)
 -- =====================================================
 
--- 2.1 dim_compras (desde Excel Compras)
-DROP TABLE IF EXISTS staging.dim_compras;
-CREATE TABLE staging.dim_compras (
+-- =====================================================
+-- 🟢 EXCEL (Archivos Excel)
+-- =====================================================
+
+-- 2.1 Excel_Compras
+DROP TABLE IF EXISTS staging.Excel_Compras;
+CREATE TABLE staging.Excel_Compras (
     id_compra VARCHAR(30),
     fecha_compra DATE,
     id_proveedor VARCHAR(30),
@@ -40,9 +44,9 @@ CREATE TABLE staging.dim_compras (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.2 dim_proveedores (desde Excel Distribuidores)
-DROP TABLE IF EXISTS staging.dim_proveedores;
-CREATE TABLE staging.dim_proveedores (
+-- 2.2 Excel_Proveedores
+DROP TABLE IF EXISTS staging.Excel_Proveedores;
+CREATE TABLE staging.Excel_Proveedores (
     id_proveedor VARCHAR(30),
     nombre_proveedor VARCHAR(200),
     ciudad VARCHAR(100),
@@ -53,9 +57,9 @@ CREATE TABLE staging.dim_proveedores (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.3 dim_insumos (desde Excel Insumos)
-DROP TABLE IF EXISTS staging.dim_insumos;
-CREATE TABLE staging.dim_insumos (
+-- 2.3 Excel_Insumos
+DROP TABLE IF EXISTS staging.Excel_Insumos;
+CREATE TABLE staging.Excel_Insumos (
     id_insumo VARCHAR(30),
     nombre_insumo VARCHAR(200),
     categoria VARCHAR(100),
@@ -67,9 +71,9 @@ CREATE TABLE staging.dim_insumos (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.4 dim_sucursales (desde Excel Puntos_Entrega)
-DROP TABLE IF EXISTS staging.dim_sucursales;
-CREATE TABLE staging.dim_sucursales (
+-- 2.4 Excel_Sucursales
+DROP TABLE IF EXISTS staging.Excel_Sucursales;
+CREATE TABLE staging.Excel_Sucursales (
     id_sucursal VARCHAR(20),
     nombre_sucursal VARCHAR(150),
     zona VARCHAR(50),
@@ -78,9 +82,13 @@ CREATE TABLE staging.dim_sucursales (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.5 dim_proveedores_mysql (desde MySQL proveedores)
-DROP TABLE IF EXISTS staging.dim_proveedores_mysql;
-CREATE TABLE staging.dim_proveedores_mysql (
+-- =====================================================
+-- 🔵 MYSQL (Base de datos MySQL - puerto 3307)
+-- =====================================================
+
+-- 2.5 MySQL_Proveedores
+DROP TABLE IF EXISTS staging.MySQL_Proveedores;
+CREATE TABLE staging.MySQL_Proveedores (
     id_proveedor INTEGER,
     nombre_empresa VARCHAR(200),
     contacto_principal VARCHAR(150),
@@ -93,9 +101,9 @@ CREATE TABLE staging.dim_proveedores_mysql (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.6 dim_sucursales_mysql (desde MySQL sucursales)
-DROP TABLE IF EXISTS staging.dim_sucursales_mysql;
-CREATE TABLE staging.dim_sucursales_mysql (
+-- 2.6 MySQL_Sucursales
+DROP TABLE IF EXISTS staging.MySQL_Sucursales;
+CREATE TABLE staging.MySQL_Sucursales (
     id_sucursal INTEGER,
     codigo_sucursal VARCHAR(20),
     nombre_sucursal VARCHAR(150),
@@ -107,9 +115,9 @@ CREATE TABLE staging.dim_sucursales_mysql (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.7 dim_tipo_insumo_mysql (desde MySQL tipo_insumo)
-DROP TABLE IF EXISTS staging.dim_tipo_insumo_mysql;
-CREATE TABLE staging.dim_tipo_insumo_mysql (
+-- 2.7 MySQL_Tipo_Insumo
+DROP TABLE IF EXISTS staging.MySQL_Tipo_Insumo;
+CREATE TABLE staging.MySQL_Tipo_Insumo (
     id_tipo INTEGER,
     nombre_tipo VARCHAR(100),
     categoria VARCHAR(50),
@@ -119,9 +127,9 @@ CREATE TABLE staging.dim_tipo_insumo_mysql (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.8 dim_insumos_mysql (desde MySQL insumos)
-DROP TABLE IF EXISTS staging.dim_insumos_mysql;
-CREATE TABLE staging.dim_insumos_mysql (
+-- 2.8 MySQL_Insumos
+DROP TABLE IF EXISTS staging.MySQL_Insumos;
+CREATE TABLE staging.MySQL_Insumos (
     id_insumo INTEGER,
     id_tipo INTEGER,
     nombre_insumo VARCHAR(150),
@@ -132,9 +140,13 @@ CREATE TABLE staging.dim_insumos_mysql (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.9 dim_zonas (desde PostgreSQL zonas)
-DROP TABLE IF EXISTS staging.dim_zonas;
-CREATE TABLE staging.dim_zonas (
+-- =====================================================
+-- 🟠 POSTGRESQL (Base de datos PostgreSQL - puerto 5444)
+-- =====================================================
+
+-- 2.9 PostGres_Zonas
+DROP TABLE IF EXISTS staging.PostGres_Zonas;
+CREATE TABLE staging.PostGres_Zonas (
     id_zona INTEGER,
     codigo_zona VARCHAR(20),
     nombre_zona VARCHAR(100),
@@ -143,9 +155,9 @@ CREATE TABLE staging.dim_zonas (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.10 dim_categorias_insumos (desde PostgreSQL categorias_insumos)
-DROP TABLE IF EXISTS staging.dim_categorias_insumos;
-CREATE TABLE staging.dim_categorias_insumos (
+-- 2.10 PostGres_Categorias_Insumos
+DROP TABLE IF EXISTS staging.PostGres_Categorias_Insumos;
+CREATE TABLE staging.PostGres_Categorias_Insumos (
     id_categoria INTEGER,
     codigo_categoria VARCHAR(20),
     nombre_categoria VARCHAR(100),
@@ -155,9 +167,9 @@ CREATE TABLE staging.dim_categorias_insumos (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.11 dim_proveedores_oficiales (desde PostgreSQL proveedores_oficiales)
-DROP TABLE IF EXISTS staging.dim_proveedores_oficiales;
-CREATE TABLE staging.dim_proveedores_oficiales (
+-- 2.11 PostGres_Proveedores_Oficiales
+DROP TABLE IF EXISTS staging.PostGres_Proveedores_Oficiales;
+CREATE TABLE staging.PostGres_Proveedores_Oficiales (
     id_proveedor INTEGER,
     codigo_proveedor VARCHAR(20),
     ruc VARCHAR(30),
@@ -169,9 +181,9 @@ CREATE TABLE staging.dim_proveedores_oficiales (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2.12 dim_sucursales_oficiales (desde PostgreSQL sucursales_oficiales)
-DROP TABLE IF EXISTS staging.dim_sucursales_oficiales;
-CREATE TABLE staging.dim_sucursales_oficiales (
+-- 2.12 PostGres_Sucursales_Oficiales
+DROP TABLE IF EXISTS staging.PostGres_Sucursales_Oficiales;
+CREATE TABLE staging.PostGres_Sucursales_Oficiales (
     id_sucursal INTEGER,
     codigo_sucursal VARCHAR(20),
     nombre_oficial VARCHAR(150),
@@ -188,9 +200,13 @@ CREATE TABLE staging.dim_sucursales_oficiales (
 -- 3. TABLAS FACT (Hechos)
 -- =====================================================
 
--- 3.1 fact_resumen_mensual (desde Excel Resumen_Mensual)
-DROP TABLE IF EXISTS staging.fact_resumen_mensual;
-CREATE TABLE staging.fact_resumen_mensual (
+-- =====================================================
+-- 🟢 EXCEL (Archivos Excel)
+-- =====================================================
+
+-- 3.1 Excel_Resumen_Mensual
+DROP TABLE IF EXISTS staging.Excel_Resumen_Mensual;
+CREATE TABLE staging.Excel_Resumen_Mensual (
     anio INTEGER,
     mes INTEGER,
     compras INTEGER,
@@ -199,9 +215,13 @@ CREATE TABLE staging.fact_resumen_mensual (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3.2 fact_entregas_mysql (desde MySQL entregas)
-DROP TABLE IF EXISTS staging.fact_entregas_mysql;
-CREATE TABLE staging.fact_entregas_mysql (
+-- =====================================================
+-- 🔵 MYSQL (Base de datos MySQL - puerto 3307)
+-- =====================================================
+
+-- 3.2 MySQL_Entregas
+DROP TABLE IF EXISTS staging.MySQL_Entregas;
+CREATE TABLE staging.MySQL_Entregas (
     id_entrega INTEGER,
     id_proveedor INTEGER,
     id_sucursal INTEGER,
@@ -213,9 +233,9 @@ CREATE TABLE staging.fact_entregas_mysql (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3.3 fact_detalle_entregas_mysql (desde MySQL detalle_entrega)
-DROP TABLE IF EXISTS staging.fact_detalle_entregas_mysql;
-CREATE TABLE staging.fact_detalle_entregas_mysql (
+-- 3.3 MySQL_Detalle_Entregas
+DROP TABLE IF EXISTS staging.MySQL_Detalle_Entregas;
+CREATE TABLE staging.MySQL_Detalle_Entregas (
     id_detalle INTEGER,
     id_entrega INTEGER,
     id_insumo INTEGER,
@@ -227,9 +247,9 @@ CREATE TABLE staging.fact_detalle_entregas_mysql (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3.4 fact_control_recepcion_mysql (desde MySQL control_recepcion)
-DROP TABLE IF EXISTS staging.fact_control_recepcion_mysql;
-CREATE TABLE staging.fact_control_recepcion_mysql (
+-- 3.4 MySQL_Control_Recepcion
+DROP TABLE IF EXISTS staging.MySQL_Control_Recepcion;
+CREATE TABLE staging.MySQL_Control_Recepcion (
     id_control INTEGER,
     id_entrega INTEGER,
     id_proveedor INTEGER,
@@ -246,9 +266,13 @@ CREATE TABLE staging.fact_control_recepcion_mysql (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3.5 fact_metas_abastecimiento (desde PostgreSQL metas_abastecimiento)
-DROP TABLE IF EXISTS staging.fact_metas_abastecimiento;
-CREATE TABLE staging.fact_metas_abastecimiento (
+-- =====================================================
+-- 🟠 POSTGRESQL (Base de datos PostgreSQL - puerto 5444)
+-- =====================================================
+
+-- 3.5 PostGres_Metas_Abastecimiento
+DROP TABLE IF EXISTS staging.PostGres_Metas_Abastecimiento;
+CREATE TABLE staging.PostGres_Metas_Abastecimiento (
     id_meta INTEGER,
     id_proveedor INTEGER,
     id_sucursal INTEGER,
@@ -260,9 +284,9 @@ CREATE TABLE staging.fact_metas_abastecimiento (
     fecha_carga TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3.6 fact_evaluaciones_calidad (desde PostgreSQL evaluaciones_calidad)
-DROP TABLE IF EXISTS staging.fact_evaluaciones_calidad;
-CREATE TABLE staging.fact_evaluaciones_calidad (
+-- 3.6 PostGres_Evaluaciones_Calidad
+DROP TABLE IF EXISTS staging.PostGres_Evaluaciones_Calidad;
+CREATE TABLE staging.PostGres_Evaluaciones_Calidad (
     id_evaluacion INTEGER,
     id_proveedor INTEGER,
     id_sucursal INTEGER,
@@ -277,10 +301,10 @@ CREATE TABLE staging.fact_evaluaciones_calidad (
 );
 
 -- =====================================================
--- 4. AUDITORÍA
+-- 4. AUDITORÍA (con nombres ETL)
 -- =====================================================
 
--- 4.1 etl_rechazo (registro de errores ETL)
+-- 4.1 etl_rechazo
 DROP TABLE IF EXISTS audit.etl_rechazo;
 CREATE TABLE audit.etl_rechazo (
     id_rechazo BIGSERIAL PRIMARY KEY,
@@ -293,7 +317,7 @@ CREATE TABLE audit.etl_rechazo (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4.2 etl_control (control de ejecución ETL)
+-- 4.2 etl_control
 DROP TABLE IF EXISTS audit.etl_control;
 CREATE TABLE audit.etl_control (
     id_control BIGSERIAL PRIMARY KEY,
@@ -309,7 +333,7 @@ CREATE TABLE audit.etl_control (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4.3 etl_log (bitácora de eventos)
+-- 4.3 etl_log
 DROP TABLE IF EXISTS audit.etl_log;
 CREATE TABLE audit.etl_log (
     id_log BIGSERIAL PRIMARY KEY,
@@ -338,11 +362,28 @@ CREATE INDEX IF NOT EXISTS idx_etl_log_control ON audit.etl_log(id_control);
 -- =====================================================
 
 DO $$
+DECLARE
+    total_staging INTEGER;
+    total_audit INTEGER;
 BEGIN
+    SELECT COUNT(*) INTO total_staging 
+    FROM information_schema.tables 
+    WHERE table_schema = 'staging';
+    
+    SELECT COUNT(*) INTO total_audit 
+    FROM information_schema.tables 
+    WHERE table_schema = 'audit';
+    
     RAISE NOTICE '✅ Tablas creadas exitosamente!';
-    RAISE NOTICE '📊 Total de tablas:';
-    RAISE NOTICE '   - DIM: 12';
-    RAISE NOTICE '   - FACT: 6';
-    RAISE NOTICE '   - AUDIT: 3';
-    RAISE NOTICE '   - TOTAL: 21';
+    RAISE NOTICE '📊 Resumen:';
+    RAISE NOTICE '   - EXCEL: 5';
+    RAISE NOTICE '   - MYSQL: 7';
+    RAISE NOTICE '   - POSTGRESQL: 6';
+    RAISE NOTICE '   - AUDIT (ETL): 3';
+    RAISE NOTICE '   - TOTAL: % tablas', total_staging + total_audit;
+    RAISE NOTICE ' ';
+    RAISE NOTICE '📋 Tablas de auditoría:';
+    RAISE NOTICE '   - etl_rechazo (registro de errores)';
+    RAISE NOTICE '   - etl_control (control de ejecución)';
+    RAISE NOTICE '   - etl_log (bitácora de eventos)';
 END $$;
