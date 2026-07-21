@@ -1,6 +1,10 @@
+-- =====================================================
+-- SCRIPT: 01_gestion_restaurante_estructura_y_datos.sql
+-- DESCRIPCIÓN: Estructura + Datos básicos (zonas y categorías)
+-- =====================================================
 
 -- =====================================================
--- TABLA 1: ZONAS
+-- 1. ZONAS
 -- =====================================================
 DROP TABLE IF EXISTS zonas CASCADE;
 
@@ -13,8 +17,22 @@ CREATE TABLE zonas (
     activo BOOLEAN DEFAULT TRUE
 );
 
+-- INSERTAR ZONAS (10 registros)
+INSERT INTO zonas (codigo_zona, nombre_zona, descripcion, region, activo)
+VALUES
+    ('ZON-001', 'Centro Historico', 'Zona centrica de la ciudad', 'Centro', TRUE),
+    ('ZON-002', 'Zona Norte', 'Zona residencial y comercial del norte', 'Norte', TRUE),
+    ('ZON-003', 'Zona Sur', 'Zona industrial y residencial del sur', 'Sur', TRUE),
+    ('ZON-004', 'Valles', 'Valles cercanos a la ciudad', 'Valles', TRUE),
+    ('ZON-005', 'Zona Occidental', 'Zona oeste de la ciudad', 'Occidente', TRUE),
+    ('ZON-006', 'Zona Oriental', 'Zona este de la ciudad', 'Oriente', TRUE),
+    ('ZON-007', 'Costanera', 'Zona cerca de la costa', 'Litoral', TRUE),
+    ('ZON-008', 'Sierra Norte', 'Zona norte de la sierra', 'Sierra', TRUE),
+    ('ZON-009', 'Sierra Centro', 'Zona centro de la sierra', 'Sierra', TRUE),
+    ('ZON-010', 'Sierra Sur', 'Zona sur de la sierra', 'Sierra', TRUE);
+
 -- =====================================================
--- TABLA 2: CATEGORIAS_INSUMOS
+-- 2. CATEGORIAS_INSUMOS
 -- =====================================================
 DROP TABLE IF EXISTS categorias_insumos CASCADE;
 
@@ -28,8 +46,27 @@ CREATE TABLE categorias_insumos (
     temperatura_maxima DECIMAL(4,1)
 );
 
+-- INSERTAR CATEGORIAS (15 registros)
+INSERT INTO categorias_insumos (codigo_categoria, nombre_categoria, descripcion, requiere_refrigeracion, temperatura_minima, temperatura_maxima)
+VALUES
+    ('CAT-001', 'Carnes Rojas', 'Carnes de res, cerdo, cordero', TRUE, 0, 4),
+    ('CAT-002', 'Aves', 'Pollos, pavos, patos', TRUE, 0, 4),
+    ('CAT-003', 'Pescados', 'Pescados y mariscos', TRUE, -2, 2),
+    ('CAT-004', 'Verduras', 'Verduras frescas', TRUE, 4, 8),
+    ('CAT-005', 'Frutas', 'Frutas frescas', TRUE, 4, 8),
+    ('CAT-006', 'Lacteos', 'Quesos, yogures, mantequilla', TRUE, 0, 4),
+    ('CAT-007', 'Huevos', 'Huevos frescos', TRUE, 0, 4),
+    ('CAT-008', 'Cereales', 'Arroz, trigo, maiz', FALSE, 15, 25),
+    ('CAT-009', 'Legumbres', 'Frijoles, lentejas, garbanzos', FALSE, 15, 25),
+    ('CAT-010', 'Especias', 'Condimentos y especias', FALSE, 15, 25),
+    ('CAT-011', 'Aceites', 'Aceites y grasas', FALSE, 15, 25),
+    ('CAT-012', 'Bebidas', 'Bebidas no alcoholicas', TRUE, 4, 8),
+    ('CAT-013', 'Panaderia', 'Panes, pasteles, galletas', FALSE, 15, 25),
+    ('CAT-014', 'Pastas', 'Pastas secas y frescas', FALSE, 15, 25),
+    ('CAT-015', 'Conservas', 'Alimentos enlatados', FALSE, 15, 25);
+
 -- =====================================================
--- TABLA 3: PROVEEDORES_OFICIALES
+-- 3. PROVEEDORES_OFICIALES
 -- =====================================================
 DROP TABLE IF EXISTS proveedores_oficiales CASCADE;
 
@@ -52,7 +89,7 @@ CREATE TABLE proveedores_oficiales (
 );
 
 -- =====================================================
--- TABLA 4: SUCURSALES_OFICIALES
+-- 4. SUCURSALES_OFICIALES
 -- =====================================================
 DROP TABLE IF EXISTS sucursales_oficiales CASCADE;
 
@@ -72,7 +109,7 @@ CREATE TABLE sucursales_oficiales (
 );
 
 -- =====================================================
--- TABLA 5: METAS_ABASTECIMIENTO
+-- 5. METAS_ABASTECIMIENTO
 -- =====================================================
 DROP TABLE IF EXISTS metas_abastecimiento CASCADE;
 
@@ -91,7 +128,7 @@ CREATE TABLE metas_abastecimiento (
 );
 
 -- =====================================================
--- TABLA 6: EVALUACIONES_CALIDAD
+-- 6. EVALUACIONES_CALIDAD
 -- =====================================================
 DROP TABLE IF EXISTS evaluaciones_calidad CASCADE;
 
@@ -109,3 +146,13 @@ CREATE TABLE evaluaciones_calidad (
     observaciones TEXT,
     evaluador VARCHAR(80)
 );
+
+-- =====================================================
+-- MENSAJE DE CONFIRMACIÓN
+-- =====================================================
+DO $$
+BEGIN
+    RAISE NOTICE '✅ ESTRUCTURA Y DATOS BÁSICOS CREADOS';
+    RAISE NOTICE '   - Zonas: %', (SELECT COUNT(*) FROM zonas);
+    RAISE NOTICE '   - Categorias Insumos: %', (SELECT COUNT(*) FROM categorias_insumos);
+END $$;

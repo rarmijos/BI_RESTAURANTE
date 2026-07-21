@@ -10,12 +10,11 @@ conn <- dbConnect(
   password = "root"
 )
 
-compras <- dbGetQuery(
-  conn, 
+compras <- dbGetQuery(conn, 
   "
   SELECT fecha_compra, costo_unitario
-  from staging.dim_compras
-  where nombre_insumo = 'Lomo de Res Premium'
+  FROM staging.excel_compras
+  WHERE nombre_insumo = 'Lomo de Res Premium'
   "
 )
 
@@ -45,3 +44,6 @@ lines(
 )
 
 summary(compras)
+summary(regresion)
+
+dbDisconnect(conn)
