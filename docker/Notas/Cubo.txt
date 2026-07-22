@@ -1,0 +1,165 @@
+┌─────────────────────────────────────────────────────┐
+│ CONFIGURACIÓN DE CONEXIÓN MYSQL                   │
+├─────────────────────────────────────────────────────┤
+│ Connection Name:   MYSQL_DW                      │
+│ Connection Type:   MySQL                         │
+│ Access:            Native (JDBC)                 │
+│                                                   │
+│ Settings:                                        │
+│ ┌─────────────────────────────────────────────┐   │
+│ │ Host Name:     localhost                   │   │
+│ │ Database Name: restaurante_db              │   │
+│ │ Port Number:   3307                        │   │
+│ │ Username:      root                        │   │
+│ │ Password:      root                        │   │
+│ └─────────────────────────────────────────────┘   │
+│                                                   │
+│ Options:                                         │
+│ ┌─────────────────────────────────────────────┐   │
+│ │ useSSL:        false                        │   │
+│ │ serverTimezone: America/Guayaquil           │   │
+│ │ allowPublicKeyRetrieval: true               │   │
+│ └─────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────┘
+
+
+
+
+
+┌─────────────────────────────────────────────────────┐
+│ CONFIGURACIÓN DE CONEXIÓN POSTGRES ORIGEN         │
+├─────────────────────────────────────────────────────┤
+│ Connection Name:   POSTGRES_ORIGEN               │
+│ Connection Type:   PostgreSQL                    │
+│ Access:            Native (JDBC)                 │
+│                                                   │
+│ Settings:                                        │
+│ ┌─────────────────────────────────────────────┐   │
+│ │ Host Name:     localhost                   │   │
+│ │ Database Name: restaurante_gestion         │   │
+│ │ Port Number:   5444                        │   │
+│ │ Username:      root                        │   │
+│ │ Password:      root                        │   │
+│ └─────────────────────────────────────────────┘   │
+│                                                   │
+│ Options:                                         │
+│ ┌─────────────────────────────────────────────┐   │
+│ │ stringtype:   unspecified                  │   │
+│ └─────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────┘
+
+
+
+
+
+
+
+
+
+┌─────────────────────────────────────────────────────┐
+│ CONFIGURACIÓN DE CONEXIÓN DATA WAREHOUSE           │
+├─────────────────────────────────────────────────────┤
+│ Connection Name:   POSTGRES_DW                   │
+│ Connection Type:   PostgreSQL                    │
+│ Access:            Native (JDBC)                 │
+│                                                   │
+│ Settings:                                        │
+│ ┌─────────────────────────────────────────────┐   │
+│ │ Host Name:     localhost                   │   │
+│ │ Database Name: datawarehouse               │   │
+│ │ Port Number:   5450                        │   │
+│ │ Username:      root                        │   │
+│ │ Password:      root                        │   │
+│ └─────────────────────────────────────────────┘   │
+│                                                   │
+│ Options:                                         │
+│ ┌─────────────────────────────────────────────┐   │
+│ │ stringtype:   unspecified                  │   │
+│ └─────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────┘
+
+
+
+
+
+
+----------------------------------------------------------------------------
+
+
+-- Conectar a MySQL (restaurante_db) y ejecutar:
+
+-- 1. Proveedor sin contacto (contacto_principal = NULL)
+INSERT INTO proveedores (
+    id_proveedor, nombre_empresa, contacto_principal, telefono, email, 
+    ciudad, tipo_proveedor, calificacion_general, estado_registro
+) VALUES (
+    999, 'PROVEEDOR SIN CONTACTO', NULL, '0999999999', 
+    'sincontacto@empresa.com', 'Quito', 'CA', 4.0, 'A'
+);
+
+-- 2. Proveedor con email inválido (sin @)
+INSERT INTO proveedores (
+    id_proveedor, nombre_empresa, contacto_principal, telefono, email, 
+    ciudad, tipo_proveedor, calificacion_general, estado_registro
+) VALUES (
+    998, 'PROVEEDOR EMAIL MALO', 'Carlos Malo', '0998888888', 
+    'emailinvalido', 'Guayaquil', 'PO', 3.5, 'A'
+);
+
+-- 3. Proveedor con calificación fuera de rango (>5)
+INSERT INTO proveedores (
+    id_proveedor, nombre_empresa, contacto_principal, telefono, email, 
+    ciudad, tipo_proveedor, calificacion_general, estado_registro
+) VALUES (
+    997, 'PROVEEDOR CALIFICACION ALTA', 'Maria Alta', '0997777777', 
+    'maria@alta.com', 'Cuenca', 'VE', 7.0, 'A'
+);
+
+-- 4. Proveedor con calificación negativa
+INSERT INTO proveedores (
+    id_proveedor, nombre_empresa, contacto_principal, telefono, email, 
+    ciudad, tipo_proveedor, calificacion_general, estado_registro
+) VALUES (
+    996, 'PROVEEDOR CALIFICACION NEGATIVA', 'Luis Bajo', '0996666666', 
+    'luis@bajo.com', 'Manta', 'PE', -1.0, 'A'
+);
+
+-- 5. Proveedor con nombre vacío
+INSERT INTO proveedores (
+    id_proveedor, nombre_empresa, contacto_principal, telefono, email, 
+    ciudad, tipo_proveedor, calificacion_general, estado_registro
+) VALUES (
+    995, '', 'Juan Vacio', '0995555555', 
+    'juan@vacio.com', 'Loja', 'LA', 4.2, 'A'
+);
+
+-- 6. Proveedor con tipo de proveedor inválido
+INSERT INTO proveedores (
+    id_proveedor, nombre_empresa, contacto_principal, telefono, email, 
+    ciudad, tipo_proveedor, calificacion_general, estado_registro
+) VALUES (
+    994, 'PROVEEDOR TIPO INVALIDO', 'Ana Invalida', '0994444444', 
+    'ana@invalido.com', 'Ibarra', 'XX', 3.8, 'A'
+);
+
+-- 7. Proveedor sin id_proveedor (NULL)
+INSERT INTO proveedores (
+    id_proveedor, nombre_empresa, contacto_principal, telefono, email, 
+    ciudad, tipo_proveedor, calificacion_general, estado_registro
+) VALUES (
+    NULL, 'PROVEEDOR SIN ID', 'Pedro Null', '0993333333', 
+    'pedro@null.com', 'Ambato', 'GE', 4.5, 'A'
+);
+
+
+
+
+------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────┐
+│  Motor de base de datos:  MySQL                            │
+│  Servidor:              host.docker.internal:3307         │
+│  Usuario:               root                               │
+│  Contraseña:            root                               │
+│  Base de datos:         restaurante_db                     │
+└─────────────────────────────────────────────────────────────┘
