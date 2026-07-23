@@ -6,9 +6,7 @@
 -- =====================================================
 -- 1. ZONAS
 -- =====================================================
-DROP TABLE IF EXISTS zonas CASCADE;
-
-CREATE TABLE zonas (
+CREATE TABLE IF NOT EXISTS zonas (
     id_zona SERIAL PRIMARY KEY,
     codigo_zona VARCHAR(10) NOT NULL UNIQUE,
     nombre_zona VARCHAR(60) NOT NULL,
@@ -16,6 +14,9 @@ CREATE TABLE zonas (
     region VARCHAR(40),
     activo BOOLEAN DEFAULT TRUE
 );
+
+-- TRUNCATE en lugar de DROP
+TRUNCATE TABLE zonas CASCADE;
 
 -- INSERTAR ZONAS (10 registros)
 INSERT INTO zonas (codigo_zona, nombre_zona, descripcion, region, activo)
@@ -34,9 +35,7 @@ VALUES
 -- =====================================================
 -- 2. CATEGORIAS_INSUMOS
 -- =====================================================
-DROP TABLE IF EXISTS categorias_insumos CASCADE;
-
-CREATE TABLE categorias_insumos (
+CREATE TABLE IF NOT EXISTS categorias_insumos (
     id_categoria SERIAL PRIMARY KEY,
     codigo_categoria VARCHAR(10) NOT NULL UNIQUE,
     nombre_categoria VARCHAR(40) NOT NULL,
@@ -45,6 +44,8 @@ CREATE TABLE categorias_insumos (
     temperatura_minima DECIMAL(4,1),
     temperatura_maxima DECIMAL(4,1)
 );
+
+TRUNCATE TABLE categorias_insumos CASCADE;
 
 -- INSERTAR CATEGORIAS (15 registros)
 INSERT INTO categorias_insumos (codigo_categoria, nombre_categoria, descripcion, requiere_refrigeracion, temperatura_minima, temperatura_maxima)
@@ -68,9 +69,7 @@ VALUES
 -- =====================================================
 -- 3. PROVEEDORES_OFICIALES
 -- =====================================================
-DROP TABLE IF EXISTS proveedores_oficiales CASCADE;
-
-CREATE TABLE proveedores_oficiales (
+CREATE TABLE IF NOT EXISTS proveedores_oficiales (
     id_proveedor SERIAL PRIMARY KEY,
     codigo_proveedor VARCHAR(10) NOT NULL UNIQUE,
     ruc VARCHAR(20) NOT NULL,
@@ -91,9 +90,7 @@ CREATE TABLE proveedores_oficiales (
 -- =====================================================
 -- 4. SUCURSALES_OFICIALES
 -- =====================================================
-DROP TABLE IF EXISTS sucursales_oficiales CASCADE;
-
-CREATE TABLE sucursales_oficiales (
+CREATE TABLE IF NOT EXISTS sucursales_oficiales (
     id_sucursal SERIAL PRIMARY KEY,
     codigo_sucursal VARCHAR(10) NOT NULL UNIQUE,
     nombre_oficial VARCHAR(80) NOT NULL,
@@ -111,9 +108,7 @@ CREATE TABLE sucursales_oficiales (
 -- =====================================================
 -- 5. METAS_ABASTECIMIENTO
 -- =====================================================
-DROP TABLE IF EXISTS metas_abastecimiento CASCADE;
-
-CREATE TABLE metas_abastecimiento (
+CREATE TABLE IF NOT EXISTS metas_abastecimiento (
     id_meta SERIAL PRIMARY KEY,
     id_proveedor INT REFERENCES proveedores_oficiales(id_proveedor),
     id_sucursal INT REFERENCES sucursales_oficiales(id_sucursal),
@@ -130,9 +125,7 @@ CREATE TABLE metas_abastecimiento (
 -- =====================================================
 -- 6. EVALUACIONES_CALIDAD
 -- =====================================================
-DROP TABLE IF EXISTS evaluaciones_calidad CASCADE;
-
-CREATE TABLE evaluaciones_calidad (
+CREATE TABLE IF NOT EXISTS evaluaciones_calidad (
     id_evaluacion SERIAL PRIMARY KEY,
     id_proveedor INT REFERENCES proveedores_oficiales(id_proveedor),
     id_sucursal INT REFERENCES sucursales_oficiales(id_sucursal),
@@ -152,7 +145,7 @@ CREATE TABLE evaluaciones_calidad (
 -- =====================================================
 DO $$
 BEGIN
-    RAISE NOTICE '✅ ESTRUCTURA Y DATOS BÁSICOS CREADOS';
+    RAISE NOTICE '✅ ESTRUCTURA CREADA';
     RAISE NOTICE '   - Zonas: %', (SELECT COUNT(*) FROM zonas);
     RAISE NOTICE '   - Categorias Insumos: %', (SELECT COUNT(*) FROM categorias_insumos);
 END $$;
